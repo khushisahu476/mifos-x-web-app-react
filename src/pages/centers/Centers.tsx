@@ -37,14 +37,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircle } from '@fortawesome/free-solid-svg-icons'
 import { Checkbox } from '@/components/ui/checkbox'
 
+type CenterWithExtra = GetCentersPageItems & {
+  accountNo?: string
+  externalId?: string
+}
+
 const centersApi = new CentersApi(getConfiguration())
 
 const Centers = () => {
   const navigate = useNavigate()
 
   // State for centers data
-  const [centers, setCenters] = useState<GetCentersPageItems[]>([])
-  // Search filter state
+  const [centers, setCenters] = useState<CenterWithExtra[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   // Pagination state
   const [page, setPage] = useState(1)
@@ -69,7 +73,7 @@ const Centers = () => {
           '' // sortOrder
         )
         const items = Array.from(response.data?.pageItems ?? [])
-        setCenters(items)
+           setCenters(items as CenterWithExtra[])
       } catch (err) {
         console.error('Failed to fetch centers', err)
       }
@@ -217,10 +221,11 @@ const Centers = () => {
                   {center.name}
                 </TableCell>
                 <TableCell className="px-6 py-4">
-                  {'Missing in OpenAPI'}
+                  {center.accountNo || '—'}
                 </TableCell>
+
                 <TableCell className="px-6 py-4">
-                  {'Missing in OpenAPI'}
+                  {center.externalId || '—'}
                 </TableCell>
                 <TableCell className="px-6 py-4">
                   {center.status?.id === 300 && (
